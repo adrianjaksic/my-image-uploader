@@ -54,7 +54,7 @@
                 <ul>
                     @foreach (var item in Model.DownloadFiles)
                     {
-                        <li><a href="@item" download="@item">@item</a></li>
+                        <li><a href="@item.Url" download="@item.Name">@item.Name (@item.Size)</a></li>
                     }
                 </ul>
             </div>

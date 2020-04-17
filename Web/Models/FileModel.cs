@@ -27,6 +27,6 @@ namespace Web.Models
 
         public string UploadStatus { get; set; }
 
-        public List<string> DownloadFiles { get; set; }
+        public List<SavedImage> DownloadFiles { get; set; }
     }
 }

@@ -6,12 +6,13 @@ using System.IO;
 using System.Web;
 using Web.Helpers;
 using Web.Interfaces;
+using Web.Models;
 
 namespace Web.Service
 {
     public class ImageService : IImageService
     {
-        public List<string> SaveFiles(string projectCode, string internalPath, string imageSize, HttpPostedFileBase file, bool newFile)
+        public List<SavedImage> SaveFiles(string projectCode, string internalPath, string imageSize, HttpPostedFileBase file, bool newFile)
         {
             try
             {
@@ -37,7 +38,7 @@ namespace Web.Service
                 file.SaveAs(serverSavePath);
                 var sizes = imageSize.ToLower().Split(',');
 
-                List<string> files = new List<string>();
+                List<SavedImage> files = new List<SavedImage>();
                 foreach (var sizeXY in sizes)
                 {
                     var subDir = Path.Combine(projectDir, "_" + sizeXY, internalPath);
@@ -61,7 +62,11 @@ namespace Web.Service
                             Directory.CreateDirectory(subDir);
                             var subFile = Path.Combine(subDir, inputFileName + ".png");
                             ImageBuilder.Current.Build(serverSavePath, subFile, resizeSetting);
-                            files.Add(Url.Combine(subWeb, inputFileName + ".png"));
+                            var saved = new SavedImage();
+                            saved.Name = inputFileName + ".png";
+                            saved.Size = sizeXY;
+                            saved.Url = Url.Combine(subWeb, inputFileName + ".png");
+                            files.Add(saved);
                         }
                     }
                 }
@@ -70,9 +75,13 @@ namespace Web.Service
             }
             catch (System.Exception e)
             {
-                return new List<string>()
+                var saved = new SavedImage();
+                saved.Name = "ERROR";
+                saved.Size = e.Message;
+                saved.Url = AppSettings.WebSite;
+                return new List<SavedImage>()
                     {
-                        "ERROR: " + e.Message
+                        saved
                     };              
             }            
         }

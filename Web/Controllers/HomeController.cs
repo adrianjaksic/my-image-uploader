@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Web.Helpers;
 using Web.Interfaces;
+using Web.Models;
 
 namespace Web.Controllers
 {
@@ -34,7 +35,7 @@ namespace Web.Controllers
             {
                 if (AppSettings.ValidProjectKeys.Contains(model.ProjectCode))
                 {
-                    model.DownloadFiles = new List<string>();
+                    model.DownloadFiles = new List<SavedImage>();
                     //iterating through multiple file collection   
                     foreach (HttpPostedFileBase file in model.Files)
                     {
