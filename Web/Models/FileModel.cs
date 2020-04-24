@@ -14,7 +14,6 @@ namespace Web.Models
         [Display(Name = "Internal path")]
         public string InternalPath { get; set; }
 
-        [Required(ErrorMessage = "If image inser sizes: 200x100,100x50,50x50.")]
         [Display(Name = "Image size")]
         public string ImageSize { get; set; }
 
