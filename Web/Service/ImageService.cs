@@ -36,41 +36,44 @@ namespace Web.Service
                 }
 
                 file.SaveAs(serverSavePath);
-                var sizes = imageSize.ToLower().Split(',');
 
                 List<SavedImage> files = new List<SavedImage>();
-                foreach (var sizeXY in sizes)
+                if (!string.IsNullOrEmpty(imageSize))
                 {
-                    var subDir = Path.Combine(projectDir, "_" + sizeXY, internalPath);
-                    var subWeb = Url.Combine(projectWeb, "_" + sizeXY, internalPath);
-                    var size = sizeXY.Split('x');
-                    if (size.Length == 2)
+                    var sizes = imageSize.ToLower().Split(',');
+                    
+                    foreach (var sizeXY in sizes)
                     {
-                        int.TryParse(size[0], out int x);
-                        int.TryParse(size[1], out int y);
-                        if (x > 0 && y > 0)
+                        var subDir = Path.Combine(projectDir, "_" + sizeXY, internalPath);
+                        var subWeb = Url.Combine(projectWeb, "_" + sizeXY, internalPath);
+                        var size = sizeXY.Split('x');
+                        if (size.Length == 2)
                         {
-                            ResizeSettings resizeSetting = new ResizeSettings
+                            int.TryParse(size[0], out int x);
+                            int.TryParse(size[1], out int y);
+                            if (x > 0 && y > 0)
                             {
-                                Width = x,
-                                Height = y,
-                                Format = "png",
-                                Mode = FitMode.Pad,
-                                PaddingColor = Color.White,
-                            };
+                                ResizeSettings resizeSetting = new ResizeSettings
+                                {
+                                    Width = x,
+                                    Height = y,
+                                    Format = "png",
+                                    Mode = FitMode.Pad,
+                                    PaddingColor = Color.White,
+                                };
 
-                            Directory.CreateDirectory(subDir);
-                            var subFile = Path.Combine(subDir, inputFileName + ".png");
-                            ImageBuilder.Current.Build(serverSavePath, subFile, resizeSetting);
-                            var saved = new SavedImage();
-                            saved.Name = inputFileName + ".png";
-                            saved.Size = sizeXY;
-                            saved.Url = Url.Combine(subWeb, inputFileName + ".png");
-                            files.Add(saved);
+                                Directory.CreateDirectory(subDir);
+                                var subFile = Path.Combine(subDir, inputFileName + ".png");
+                                ImageBuilder.Current.Build(serverSavePath, subFile, resizeSetting);
+                                var saved = new SavedImage();
+                                saved.Name = inputFileName + ".png";
+                                saved.Size = sizeXY;
+                                saved.Url = Url.Combine(subWeb, inputFileName + ".png");
+                                files.Add(saved);
+                            }
                         }
                     }
                 }
-
                 return files;
             }
             catch (System.Exception e)
