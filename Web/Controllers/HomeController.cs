@@ -23,7 +23,7 @@ namespace Web.Controllers
         public ActionResult UploadFiles()
         {
             Models.FileModel model = new Models.FileModel();
-            model.ProjectCode = "Slike";
+            model.ProjectCode = AppSettings.ValidProjectKeys.First();
             model.InternalPath = AppSettings.DefaultContentFolder;
             model.ImageSize = AppSettings.DefaultSize;
             return View(model);
